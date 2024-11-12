@@ -4,6 +4,7 @@ import edu.api.template.config.RestAssuredObjectMapperConfig;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import java.util.concurrent.TimeUnit;
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestPlan;
 
@@ -12,6 +13,11 @@ public class RestAssuredFilterListener implements TestExecutionListener {
   @Override
   public void testPlanExecutionStarted(TestPlan testPlan) {
     RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-    RestAssured.config = RestAssuredObjectMapperConfig.configRestAssuredObjectMapper();
+    RestAssured.config =
+        RestAssuredObjectMapperConfig.configRestAssuredObjectMapper()
+            .connectionConfig(
+                RestAssured.config()
+                    .getConnectionConfig()
+                    .closeIdleConnectionsAfterEachResponseAfter(30, TimeUnit.SECONDS));
   }
 }
