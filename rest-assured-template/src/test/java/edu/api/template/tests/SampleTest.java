@@ -1,10 +1,9 @@
 package edu.api.template.tests;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 import edu.api.template.base.BaseTest;
-import edu.api.template.model.DummyObject;
+import edu.api.template.config.ConfigManager;
 import edu.api.template.utils.ApiUtils;
 import org.junit.jupiter.api.Test;
 
@@ -12,33 +11,33 @@ public class SampleTest extends BaseTest {
 
   @Test
   public void testGetMethod() {
-    given()
-        .spec(ApiUtils.getBaseRequestSpec())
-        .basePath("/todos/1")
-        .when()
-        .get()
-        .then()
-        .statusCode(200)
-        .body("id", equalTo(1));
+    String jsonBody =
+        """
+{
+  "id": 10,
+  "name": "doggie",
+  "category": {
+    "id": 1,
+    "name": "Dogs"
+  },
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": 0,
+      "name": "string"
+    }
+  ],
+  "status": "available"
+}""";
 
-    // alternative option
-    //    assertThat(response.statusCode()).isEqualTo(200);
-    //    DummyObject dummyObject = response.body().as(DummyObject.class);
-    //    assertThat(dummyObject.getId()).isEqualTo(1);
-  }
-
-  @Test
-  public void testPostMethod() {
-    DummyObject dummyObj =
-        DummyObject.builder().id(2).userId(2).title("DummyTitle").completed(false).build();
-    given()
-        .spec(ApiUtils.getBaseRequestSpec())
-        .body(dummyObj)
-        .basePath("/posts")
+    given(ApiUtils.getBaseRequestSpec())
+        .baseUri(ConfigManager.getInstance().getBaseUrl())
+        .body(jsonBody)
         .when()
         .post()
         .then()
-        .statusCode(201)
-        .body("id", equalTo(101));
+        .statusCode(200);
   }
 }

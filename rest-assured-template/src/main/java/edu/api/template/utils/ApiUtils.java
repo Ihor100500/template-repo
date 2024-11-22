@@ -9,7 +9,7 @@ public class ApiUtils {
   public static RequestSpecification getBaseRequestSpec() {
     return new RequestSpecBuilder()
         .setContentType(ContentType.JSON)
-        .addHeader("Accept", ContentType.JSON.toString())
+        .addHeader("Accept", ContentType.XML.toString())
         .setRelaxedHTTPSValidation()
         .build();
   }
